@@ -1,4 +1,4 @@
-package com.sheikhhussein.prayertimes
+package com.abdelrahman.prayertimes
 
 import android.media.MediaPlayer
 import io.flutter.embedding.android.FlutterActivity
@@ -6,7 +6,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.sheikhhussein.prayertimes/audio"
+    private val CHANNEL = "com.abdelrahman.prayertimes/audio"
     private var mediaPlayer: MediaPlayer? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

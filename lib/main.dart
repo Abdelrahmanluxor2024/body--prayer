@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'مواقيت الصلاة - الشيخ حسين',
+      title: 'مواقيت الصلاة - الأقصر',
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar', 'EG'),
       supportedLocales: const [Locale('ar', 'EG'), Locale('ar')],
@@ -67,9 +67,12 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _fadeAnim;
   late Animation<double> _scaleAnim;
 
+  String _splashTitle = 'عبد الرحمن ياسر الاسيوطي';
+
   @override
   void initState() {
     super.initState();
+    _loadCustomTitle();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
@@ -95,6 +98,18 @@ class _SplashScreenState extends State<SplashScreen>
         );
       }
     });
+  }
+
+  Future<void> _loadCustomTitle() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString('customTitle');
+      if (saved != null && saved.trim().isNotEmpty && mounted) {
+        setState(() {
+          _splashTitle = saved.trim();
+        });
+      }
+    } catch (_) {}
   }
 
   @override
@@ -126,30 +141,31 @@ class _SplashScreenState extends State<SplashScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: const Color(0xFFFFD700), width: 2),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFFFD700).withOpacity(0.4),
-                              blurRadius: 30,
-                              spreadRadius: 4,
+                              color: const Color(0xFFFFD700).withOpacity(0.35),
+                              blurRadius: 28,
+                              spreadRadius: 2,
                             ),
                           ],
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
+                          borderRadius: BorderRadius.circular(21),
                           child: Image.asset(
                             'assets/images/logo.png',
-                            width: 140,
-                            height: 140,
+                            width: 220,
+                            height: 220,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(
-                              width: 140,
-                              height: 140,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFF1E1233),
+                              width: 220,
+                              height: 220,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(21),
+                                color: const Color(0xFF1E1233),
                               ),
                               child: const Center(
                                 child: Text('🕌', style: TextStyle(fontSize: 65)),
@@ -160,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 25),
                       Text(
-                        'مواقيت الصلاة',
+                        'مواقيت الصلاة - الأقصر',
                         style: GoogleFonts.amiri(
                           fontSize: 34,
                           fontWeight: FontWeight.bold,
@@ -175,19 +191,11 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '⭐ الشيخ حسين ⭐',
+                        '⭐ $_splashTitle ⭐',
                         style: GoogleFonts.amiri(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFFFFE082),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'مجموعة الشيخ حسين لتحفيظ القرآن الكريم',
-                        style: GoogleFonts.cairo(
-                          fontSize: 14,
-                          color: Colors.white70,
                         ),
                       ),
                       const SizedBox(height: 35),
@@ -708,7 +716,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   static const MethodChannel _audioChannel =
-      MethodChannel('com.sheikhhussein.prayertimes/audio');
+      MethodChannel('com.abdelrahman.prayertimes/audio');
 
   late Timer _timer;
   DateTime _now = DateTime.now();
@@ -717,6 +725,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool _athanNotifications = true;
   bool _reminder15Min = true;
   int _selectedMonth = 9;
+  String _customTitle = 'عبد الرحمن ياسر الاسيوطي';
 
   bool _isPlayingAudio = false;
   String _lastTriggeredAthanKey = '';
@@ -1026,6 +1035,7 @@ class _HomeScreenState extends State<HomeScreen>
         _showIqama = prefs.getBool('showIqama') ?? true;
         _athanNotifications = prefs.getBool('athanNotifications') ?? true;
         _reminder15Min = prefs.getBool('reminder15Min') ?? true;
+        _customTitle = prefs.getString('customTitle') ?? 'عبد الرحمن ياسر الاسيوطي';
       });
     } catch (_) {}
   }
@@ -1035,6 +1045,100 @@ class _HomeScreenState extends State<HomeScreen>
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(key, value);
     } catch (_) {}
+  }
+
+  Future<void> _saveCustomTitle(String newTitle) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('customTitle', newTitle);
+      setState(() {
+        _customTitle = newTitle;
+      });
+    } catch (_) {}
+  }
+
+  void _showEditTitleDialog() {
+    final textController = TextEditingController(text: _customTitle);
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E1738),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: const BorderSide(color: Color(0xFFFFD700), width: 1.5),
+          ),
+          title: Row(
+            children: [
+              const Icon(Icons.edit, color: Color(0xFFFFD700), size: 22),
+              const SizedBox(width: 8),
+              Text(
+                'تعديل الاسم المعروض',
+                style: GoogleFonts.cairo(
+                  color: const Color(0xFFFFD700),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'اكتب الاسم الذي ترغب بظهوره باللون الأصفر:',
+                style: GoogleFonts.cairo(color: Colors.white70, fontSize: 13),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: textController,
+                style: GoogleFonts.cairo(color: Colors.white, fontSize: 15),
+                decoration: InputDecoration(
+                  hintText: 'مثال: عبد الرحمن ياسر الاسيوطي',
+                  hintStyle: GoogleFonts.cairo(color: Colors.white38),
+                  filled: true,
+                  fillColor: Colors.black26,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFFFD700)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('إلغاء', style: GoogleFonts.cairo(color: Colors.white60)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final text = textController.text.trim();
+                if (text.isNotEmpty) {
+                  _saveCustomTitle(text);
+                  _showSnackBar('✅ تم تحديث الاسم بنجاح');
+                }
+                Navigator.pop(ctx);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFD700),
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              child: Text(
+                'حفظ',
+                style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   String _adjustTime(String prayerKey, String time24) {
@@ -1286,7 +1390,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'مواقيت الصلاة',
+            'مواقيت الصلاة - الأقصر',
             style: GoogleFonts.amiri(
               fontSize: 32,
               fontWeight: FontWeight.bold,
@@ -1299,21 +1403,26 @@ class _HomeScreenState extends State<HomeScreen>
               ],
             ),
           ),
-          Text(
-            '⭐ الشيخ حسين ⭐',
-            style: GoogleFonts.amiri(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFFFFE082),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'مجموعة الشيخ حسين لتحفيظ القرآن الكريم',
-            style: GoogleFonts.cairo(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.white70,
+          InkWell(
+            onTap: _showEditTitleDialog,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '⭐ $_customTitle ⭐',
+                    style: GoogleFonts.amiri(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFFFFE082),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Icon(Icons.edit, size: 16, color: Color(0xFFFFD700)),
+                ],
+              ),
             ),
           ),
           PopupMenuButton<int>(
@@ -2077,7 +2186,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           const SizedBox(height: 10),
           Text(
-            'مواقيت الصلاة',
+            'مواقيت الصلاة - الأقصر',
             style: GoogleFonts.amiri(
               fontSize: 34,
               fontWeight: FontWeight.bold,
@@ -2085,20 +2194,11 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
           Text(
-            '⭐ الشيخ حسين ⭐',
+            '⭐ $_customTitle ⭐',
             style: GoogleFonts.amiri(
               fontSize: 26,
               fontWeight: FontWeight.bold,
               color: const Color(0xFFFFE082),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'مجموعة الشيخ حسين لتحفيظ القرآن الكريم',
-            style: GoogleFonts.cairo(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.white70,
             ),
           ),
           Text(
@@ -2222,18 +2322,13 @@ class _HomeScreenState extends State<HomeScreen>
             );
           }),
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '🤲 نسألكم الدعاء • مجموعة الشيخ حسين 🤲',
-                style: GoogleFonts.cairo(
-                  fontSize: 11,
-                  color: Colors.white54,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          Text(
+            '🤲 نسألكم الدعاء 🤲',
+            style: GoogleFonts.cairo(
+              fontSize: 11,
+              color: Colors.white54,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -2482,8 +2577,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildContactSection() {
-    const phone = '+201022754048';
-    const displayPhone = '+20 10 22754048';
+    const phone = '+201064106070';
+    const displayPhone = '01064106070';
 
     return Container(
       width: double.infinity,
@@ -2501,7 +2596,7 @@ class _HomeScreenState extends State<HomeScreen>
               const Text('📞', style: TextStyle(fontSize: 20)),
               const SizedBox(width: 8),
               Text(
-                'للتواصل مع الشيخ حسين',
+                'للتواصل',
                 style: GoogleFonts.cairo(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -2576,14 +2671,6 @@ class _HomeScreenState extends State<HomeScreen>
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: const Color(0xFFFFD700),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'مجموعة الشيخ حسين لتحفيظ القرآن الكريم',
-          style: GoogleFonts.cairo(
-            fontSize: 12,
-            color: Colors.white54,
           ),
         ),
         const SizedBox(height: 2),
