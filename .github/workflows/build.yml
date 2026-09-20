@@ -2,7 +2,9 @@ name: Build Flutter APK
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - arena/01a0c07e-body-prayer
   workflow_dispatch:
 
 jobs:
