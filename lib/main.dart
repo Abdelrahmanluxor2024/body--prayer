@@ -66,10 +66,12 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _fadeAnim;
   late Animation<double> _scaleAnim;
+  String _ownerName = 'عبد الرحمن ياسر الاسيوطي';
 
   @override
   void initState() {
     super.initState();
+    _loadOwnerName();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
@@ -101,6 +103,18 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadOwnerName() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString('ownerDisplayName');
+      if (mounted && saved != null && saved.trim().isNotEmpty) {
+        setState(() {
+          _ownerName = saved.trim();
+        });
+      }
+    } catch (_) {}
   }
 
   @override
@@ -175,7 +189,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '⭐ عبد الرحمن ياسر الاسيوطي ⭐',
+                        '⭐ $_ownerName ⭐',
                         style: GoogleFonts.amiri(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
@@ -717,6 +731,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool _athanNotifications = true;
   bool _reminder15Min = true;
   int _selectedMonth = 9;
+  String _displayName = 'عبد الرحمن ياسر الاسيوطي';
 
   bool _isPlayingAudio = false;
   String _lastTriggeredAthanKey = '';
@@ -1315,6 +1330,10 @@ class _HomeScreenState extends State<HomeScreen>
         _showIqama = prefs.getBool('showIqama') ?? true;
         _athanNotifications = prefs.getBool('athanNotifications') ?? true;
         _reminder15Min = prefs.getBool('reminder15Min') ?? true;
+        final savedName = prefs.getString('ownerDisplayName');
+        if (savedName != null && savedName.trim().isNotEmpty) {
+          _displayName = savedName.trim();
+        }
       });
     } catch (_) {}
   }
@@ -1324,6 +1343,99 @@ class _HomeScreenState extends State<HomeScreen>
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(key, value);
     } catch (_) {}
+  }
+
+  // -----------------------------------------------------------
+  // تعديل وحفظ الاسم المعروض (✏️) في الذاكرة
+  // -----------------------------------------------------------
+  Future<void> _editDisplayName() async {
+    final controller = TextEditingController(text: _displayName);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF14122E),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: const BorderSide(color: Color(0xFFFFD700), width: 1),
+        ),
+        title: Text(
+          '✏️ تعديل الاسم المعروض',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.cairo(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFFFFD700),
+          ),
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textAlign: TextAlign.center,
+          maxLength: 40,
+          style: GoogleFonts.cairo(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          decoration: InputDecoration(
+            counterStyle: GoogleFonts.cairo(color: Colors.white38),
+            hintText: 'اكتب الاسم الجديد هنا',
+            hintStyle: GoogleFonts.cairo(color: Colors.white38),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide:
+                  const BorderSide(color: Color(0xFFFFD700), width: 1.2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide:
+                  const BorderSide(color: Color(0xFFFFD700), width: 1.8),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              'إلغاء',
+              style: GoogleFonts.cairo(
+                color: Colors.white70,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFFD700),
+              foregroundColor: const Color(0xFF0A0A1A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(
+              'حفظ',
+              style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final newName = controller.text.trim();
+      if (newName.isNotEmpty && newName != _displayName) {
+        setState(() {
+          _displayName = newName;
+        });
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('ownerDisplayName', newName);
+        } catch (_) {}
+        _showSnackBar('تم حفظ الاسم: $newName ✨');
+      }
+    }
+    controller.dispose();
   }
 
   String _adjustTime(String prayerKey, String time24) {
@@ -1594,16 +1706,28 @@ class _HomeScreenState extends State<HomeScreen>
             children: [
               const Text('⭐', style: TextStyle(fontSize: 22, color: Color(0xFFFFD700))),
               const SizedBox(width: 8),
-              Text(
-                'حسين الشعار ابو العبادلة',
-                style: GoogleFonts.amiri(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFFFFE082),
+              Flexible(
+                child: Text(
+                  _displayName,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.amiri(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFFFE082),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
               const Text('⭐', style: TextStyle(fontSize: 22, color: Color(0xFFFFD700))),
+              const SizedBox(width: 2),
+              IconButton(
+                tooltip: 'تعديل الاسم',
+                onPressed: _editDisplayName,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                splashRadius: 20,
+                icon: const Text('✏️', style: TextStyle(fontSize: 17)),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -2481,7 +2605,7 @@ class _HomeScreenState extends State<HomeScreen>
               const Text('⭐', style: TextStyle(fontSize: 24, color: Color(0xFFFFD700))),
               const SizedBox(width: 8),
               Text(
-                'عبد الرحمن ياسر الاسيوطي',
+                _displayName,
                 style: GoogleFonts.amiri(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -2633,7 +2757,7 @@ class _HomeScreenState extends State<HomeScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '🤲 نسألكم الدعاء • مجموعة الشيخ حسين 🤲',
+                '🤲 نسألكم الدعاء 🤲',
                 style: GoogleFonts.cairo(
                   fontSize: 11,
                   color: Colors.white54,
@@ -2889,8 +3013,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildContactSection() {
-    const phone = '+201022754048';
-    const displayPhone = '+20 10 22754048';
+    const phone = '+201064106070';
+    const displayPhone = '01064106070';
 
     return Container(
       width: double.infinity,
@@ -2908,7 +3032,7 @@ class _HomeScreenState extends State<HomeScreen>
               const Text('📞', style: TextStyle(fontSize: 20)),
               const SizedBox(width: 8),
               Text(
-                'للتواصل مع الشيخ حسين',
+                'للتواصل مع $_displayName',
                 style: GoogleFonts.cairo(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -2986,14 +3110,6 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          'مجموعة الشيخ حسين لتحفيظ القرآن الكريم',
-          style: GoogleFonts.cairo(
-            fontSize: 12,
-            color: Colors.white54,
-          ),
-        ),
-        const SizedBox(height: 2),
         Text(
           'جميع الحقوق محفوظة © 2026',
           style: GoogleFonts.cairo(
