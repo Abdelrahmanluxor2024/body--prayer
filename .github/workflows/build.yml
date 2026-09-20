@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build Debug APK
+    name: Build Debug & Release APK
     runs-on: ubuntu-latest
 
     steps:
@@ -32,9 +32,25 @@ jobs:
       - name: Build Debug APK
         run: flutter build apk --debug
 
-      - name: Upload APK
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: prayer-times-luxor-debug
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 30
+
+      # The release keystore (android/app/app-release.jks) and the signingConfig
+      # block in android/app/build.gradle are committed to the repo, so the
+      # release build signs itself without needing repository secrets.
+      - name: Build Release APK (signed)
+        run: flutter build apk --release
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: prayer-times-luxor-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+      - name: Show APK sizes
+        run: ls -lh build/app/outputs/flutter-apk/
