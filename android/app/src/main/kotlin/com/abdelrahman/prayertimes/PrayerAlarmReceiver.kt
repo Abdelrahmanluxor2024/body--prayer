@@ -1,4 +1,4 @@
-package com.sheikhhussein.prayertimes
+package com.abdelrahman.prayertimes
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
