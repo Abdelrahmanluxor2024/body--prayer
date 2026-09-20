@@ -1,7 +1,7 @@
-name: prayer_times_luxor
-description: "مواقيت الصلاة - محافظة الأقصر"
+name: prayer_times_sheikh_hussein
+description: "تطبيق مواقيت الصلاة - الشيخ حسين - محافظة الأقصر"
 publish_to: 'none'
-version: 1.0.4+5
+version: 1.0.10+11
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

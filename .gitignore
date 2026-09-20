@@ -1,8 +1,9 @@
-﻿# Flutter / Dart
+# Flutter / Dart
 build/
 .dart_tool/
 .packages
 .pub-cache/
 .pub/
 *.jks
+!android/app/app-release.jks
 key.properties
