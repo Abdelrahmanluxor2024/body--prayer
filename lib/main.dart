@@ -3032,7 +3032,7 @@ class _HomeScreenState extends State<HomeScreen>
               const Text('📞', style: TextStyle(fontSize: 20)),
               const SizedBox(width: 8),
               Text(
-                'للتواصل مع $_displayName',
+               'للتواصل مع عبد الرحمن ياسر الاسيوطي',
                 style: GoogleFonts.cairo(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
