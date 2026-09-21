@@ -1531,15 +1531,15 @@ class _HomeScreenState extends State<HomeScreen>
     return '$hour:$minute $period';
   }
 
-  /// وقت الإقامة الفعلي = وقت الصلاة − دقائق الإقامة
-  /// مثال: العصر 4:20 م بإقامة 15 دقيقة → '4:15 م'
+  /// وقت الإقامة الفعلي = وقت الصلاة + دقائق الإقامة (الإقامة بتيجي بعد الأذان)
+  /// مثال: العصر 4:00 م بإقامة 15 دقيقة → '4:15 م'
   /// بيرجع سطر فاضي لو الصلاة مفيش لها إقامة
   String _formatIqamaTime(String time24, int iqamaMinutes) {
     if (iqamaMinutes <= 0) return '';
     final parts = time24.split(':');
     int totalMinutes = int.parse(parts[0]) * 60 + int.parse(parts[1]);
-    totalMinutes -= iqamaMinutes;
-    if (totalMinutes < 0) totalMinutes += 24 * 60;
+    totalMinutes += iqamaMinutes;
+    if (totalMinutes >= 24 * 60) totalMinutes -= 24 * 60;
     final hour = totalMinutes ~/ 60;
     final minute = totalMinutes % 60;
     final period = hour >= 12 ? 'م' : 'ص';
@@ -2347,7 +2347,7 @@ class _HomeScreenState extends State<HomeScreen>
               style: GoogleFonts.cairo(fontSize: AppTextSizes.cardBody, color: Colors.white),
             ),
             subtitle: Text(
-              'عرض وقت الإقامة تحت وقت كل صلاة (زي العصر 4:20 والإقامة 4:15)',
+              'عرض وقت الإقامة تحت وقت كل صلاة (زي العصر 4:00 والإقامة 4:15)',
               style: GoogleFonts.cairo(fontSize: AppTextSizes.cardNote, color: Colors.white54),
             ),
             value: _showIqama,
