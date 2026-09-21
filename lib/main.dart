@@ -1821,7 +1821,6 @@ class _HomeScreenState extends State<HomeScreen>
           Text(
             PrayerData.prayerAyah,
             textAlign: TextAlign.center,
-            textDirection: TextDirection.rtl,
             softWrap: true,
             style: GoogleFonts.amiri(
               fontSize: fontSize,
