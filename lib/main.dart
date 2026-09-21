@@ -741,7 +741,7 @@ class AppTextSizes {
   static const double prayerIcon = 28;
   static const double prayerName = 20;
   static const double prayerTime = 25;
-  static const double iqamaBadge = 12;
+  static const double iqamaTime = 14.5;
   static const double prayerCardMinHeight = 76;
 
   // الهيدر
@@ -1531,6 +1531,23 @@ class _HomeScreenState extends State<HomeScreen>
     return '$hour:$minute $period';
   }
 
+  /// وقت الإقامة الفعلي = وقت الصلاة − دقائق الإقامة
+  /// مثال: العصر 4:20 م بإقامة 15 دقيقة → '4:15 م'
+  /// بيرجع سطر فاضي لو الصلاة مفيش لها إقامة
+  String _formatIqamaTime(String time24, int iqamaMinutes) {
+    if (iqamaMinutes <= 0) return '';
+    final parts = time24.split(':');
+    int totalMinutes = int.parse(parts[0]) * 60 + int.parse(parts[1]);
+    totalMinutes -= iqamaMinutes;
+    if (totalMinutes < 0) totalMinutes += 24 * 60;
+    final hour = totalMinutes ~/ 60;
+    final minute = totalMinutes % 60;
+    final period = hour >= 12 ? 'م' : 'ص';
+    int hour12 = hour % 12;
+    if (hour12 == 0) hour12 = 12;
+    return '$hour12:${minute.toString().padLeft(2, '0')} $period';
+  }
+
   Map<String, dynamic> _getTodayData() {
     final monthList =
         PrayerData.allMonthsTimes[_selectedMonth] ?? PrayerData.septemberTimes;
@@ -1899,15 +1916,20 @@ class _HomeScreenState extends State<HomeScreen>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            PrayerData.prayerAyah,
-            textAlign: TextAlign.center,
-            softWrap: true,
-            style: GoogleFonts.amiri(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFFFFECB3),
-              height: 1.7,
+          // الآية دايمًا في سطر واحد — FittedBox بيضبط الحجم تلقائياً
+          // عشان القوسين ﴿ ﴾ ما ينزلوش سطر لوحدهم على أي شاشة
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              PrayerData.prayerAyah,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: GoogleFonts.amiri(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFFFFECB3),
+                height: 1.4,
+              ),
             ),
           ),
           const SizedBox(height: 3),
@@ -2088,28 +2110,30 @@ class _HomeScreenState extends State<HomeScreen>
         final formatted12 = _format12Hour(adjusted);
         final isNext = (nextPrayerKey == key);
         final iqama = PrayerData.iqamaMinutes[key] ?? 0;
+        final iqamaTime = _showIqama ? _formatIqamaTime(adjusted, iqama) : '';
 
         return _buildPrayerCardItem(
           name: name,
           icon: icon,
           time12: formatted12,
           isNext: isNext,
-          iqamaMinutes: iqama,
+          iqamaTime: iqamaTime,
         );
       }).toList(),
     );
   }
 
-  /// كارت الصلاة الواحد - نفس الويدجت بيتستخدم في شاشة التطبيق وفي الصورة المحفوظة
-  /// الأيقونة + اسم الصلاة + شارة الإقامة في جهة البداية، والوقت بخط كبير وواضح في الجهة التانية
+  /// كارت الصلاة الواحد - نفس الويدجت بيتستخدم في شاشة التطبيق
+  /// الأيقونة + اسم الصلاة في جهة البداية، والوقت الكبير + وقت الإقامة تحته في الجهة التانية
   Widget _buildPrayerCardItem({
     required String name,
     required String icon,
     required String time12,
     required bool isNext,
-    required int iqamaMinutes,
+    required String iqamaTime,
   }) {
-    final bool showIqama = _showIqama && iqamaMinutes > 0;
+    final Color timeColor =
+        isNext ? const Color(0xFF00D68F) : const Color(0xFFFFD700);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -2148,68 +2172,54 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
           const SizedBox(width: 10),
-          // اسم الصلاة + وقت الإقامة
+          // اسم الصلاة - بيصغر تلقائياً على الشاشات الضيقة بدل ما يعمل Overflow
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // بيصغر تلقائياً على الشاشات الضيقة بدل ما يعمل Overflow
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    name,
-                    style: GoogleFonts.cairo(
-                      fontSize: AppTextSizes.prayerName,
-                      fontWeight: isNext ? FontWeight.w800 : FontWeight.w700,
-                      color: isNext ? const Color(0xFFFFD700) : Colors.white,
-                      height: 1.25,
-                    ),
-                  ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                name,
+                style: GoogleFonts.cairo(
+                  fontSize: AppTextSizes.prayerName,
+                  fontWeight: isNext ? FontWeight.w800 : FontWeight.w700,
+                  color: isNext ? const Color(0xFFFFD700) : Colors.white,
+                  height: 1.25,
                 ),
-                if (showIqama) ...[
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 9, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD700).withOpacity(0.14),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(
-                        color: const Color(0xFFFFD700).withOpacity(0.4),
-                        width: 0.8,
-                      ),
-                    ),
-                    child: Text(
-                      'إقامة $iqamaMinutes د',
-                      style: GoogleFonts.cairo(
-                        fontSize: AppTextSizes.iqamaBadge,
-                        color: const Color(0xFFFFE082),
-                        fontWeight: FontWeight.bold,
-                        height: 1.2,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
           const SizedBox(width: 10),
-          // وقت الصلاة - أكبر رقم في الكارت
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              time12,
-              style: GoogleFonts.cairo(
-                fontSize: AppTextSizes.prayerTime,
-                fontWeight: FontWeight.w900,
-                color: isNext ? const Color(0xFF00D68F) : const Color(0xFFFFD700),
-                height: 1.15,
-                letterSpacing: 0.2,
+          // وقت الصلاة + وقت الإقامة تحته
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  time12,
+                  style: GoogleFonts.cairo(
+                    fontSize: AppTextSizes.prayerTime,
+                    fontWeight: FontWeight.w900,
+                    color: timeColor,
+                    height: 1.15,
+                  ),
+                ),
               ),
-            ),
+              if (iqamaTime.isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Text(
+                  iqamaTime,
+                  style: GoogleFonts.cairo(
+                    fontSize: AppTextSizes.iqamaTime,
+                    fontWeight: FontWeight.w700,
+                    color: timeColor.withOpacity(0.8),
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),
@@ -2244,17 +2254,37 @@ class _HomeScreenState extends State<HomeScreen>
             ],
           ),
           const SizedBox(width: 10),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              _format12Hour(tomorrowFajr24),
-              style: GoogleFonts.cairo(
-                fontSize: AppTextSizes.cardValue,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                height: 1.2,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  _format12Hour(tomorrowFajr24),
+                  style: GoogleFonts.cairo(
+                    fontSize: AppTextSizes.cardValue,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
+                ),
               ),
-            ),
+              if (_showIqama) ...[
+                const SizedBox(height: 2),
+                Text(
+                  _formatIqamaTime(
+                      tomorrowFajr24, PrayerData.iqamaMinutes['fajr'] ?? 0),
+                  style: GoogleFonts.cairo(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white70,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),
@@ -2317,7 +2347,7 @@ class _HomeScreenState extends State<HomeScreen>
               style: GoogleFonts.cairo(fontSize: AppTextSizes.cardBody, color: Colors.white),
             ),
             subtitle: Text(
-              'عرض دقائق الإقامة بجوار كل صلاة',
+              'عرض وقت الإقامة تحت وقت كل صلاة (زي العصر 4:20 والإقامة 4:15)',
               style: GoogleFonts.cairo(fontSize: AppTextSizes.cardNote, color: Colors.white54),
             ),
             value: _showIqama,
@@ -2730,17 +2760,65 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  /// كارت الصورة المحفوظة - بنفس عرض وتنسيق الشاشة اللي بيشوفها المستخدم بالظبط:
-  /// نفس الخلفية، نفس الحواف، نفس مقاسات الخطوط، ونفس كروت الصلوات المعروضة في التطبيق.
+  /// كارت الصورة المحفوظة - بمقاس 3:4 (عرض:طول) ≈ 1080×1440 بكسل،
+  /// شكل مناسب لـ post على فيسبوك أو حالة واتساب من غير ما تبقى صورة طولي كاملة الشاشة:
+  /// نفس هوية الشاشة (العنوان + الاسم + الشارات + الآية في سطر واحد)
+  /// ومواعيد الصلوات في شبكة 2×3 (الصلوات الخمس + فجر الغد).
   Widget _buildShareableScheduleCard(
       Map<String, dynamic> todayData, String arabicDate) {
-    // عرض الصورة = عرض شاشة الموبايل (كان قبل كده عرض ثابت 500 فبيطلع بمقاس مختلف عن الشاشة)
+    // عرض الصورة = عرض شاشة الموبايل، والطول = العرض × 4/3 (مقاس 3:4)
     final double screenWidth = MediaQuery.sizeOf(context).width;
     final double imageWidth = screenWidth > 0 ? screenWidth : 360.0;
+    final double imageHeight = imageWidth * 4.0 / 3.0;
     final String? nextPrayerKey = _getNextPrayerInfo()['key'] as String?;
+    final String tomorrowFajr24 = _getTomorrowFajr();
+
+    // أسماء قصيرة منضبطه للخلية (الأيقونة بتوضح الصلاة)
+    const Map<String, String> shortNames = {
+      'fajr': 'الفجر',
+      'dhuhr': 'الظهر',
+      'asr': 'العصر',
+      'maghrib': 'المغرب',
+      'isha': 'العشاء',
+    };
+
+    // خلايا الشبكة الستة: الصلوات الخمس + فجر الغد
+    final List<Widget> cells = PrayerData.prayerMeta.map((meta) {
+      final key = meta['key']!;
+      final adjusted = _adjustTime(key, todayData[key]!);
+      final iqama = PrayerData.iqamaMinutes[key] ?? 0;
+      return _buildImageGridCell(
+        name: shortNames[key] ?? meta['name']!,
+        icon: meta['icon']!,
+        time12: _format12Hour(adjusted),
+        iqamaTime: _showIqama ? _formatIqamaTime(adjusted, iqama) : '',
+        isNext: nextPrayerKey == key,
+      );
+    }).toList()
+      ..add(_buildImageGridCell(
+        name: 'فجر الغد',
+        icon: '🌅',
+        time12: _format12Hour(tomorrowFajr24),
+        iqamaTime: _showIqama
+            ? _formatIqamaTime(tomorrowFajr24,
+                PrayerData.iqamaMinutes['fajr'] ?? 0)
+            : '',
+        isNext: false,
+      ));
+
+    Widget gridRow(Widget a, Widget b) {
+      return Row(
+        children: [
+          Expanded(child: a),
+          const SizedBox(width: 8),
+          Expanded(child: b),
+        ],
+      );
+    }
 
     return Container(
       width: imageWidth,
+      height: imageHeight,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -2754,56 +2832,37 @@ class _HomeScreenState extends State<HomeScreen>
           Positioned.fill(
             child: CustomPaint(painter: StarsPainter(0.6)),
           ),
-          // نفس حواف الشاشة (16 من كل جنب)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0D0B1C).withOpacity(0.92),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0xFFFFD700).withOpacity(0.5),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.7),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+            padding: const EdgeInsets.all(14),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF0D0B1C).withOpacity(0.94),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xFFFFD700).withOpacity(0.5),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.7),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // صف المساجد والهلال - نفس مقاسات الشاشة
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text('🕌', style: TextStyle(fontSize: 20)),
-                          SizedBox(width: 8),
-                          Text('✨', style: TextStyle(fontSize: 17)),
-                          SizedBox(width: 8),
-                          Text('🌙', style: TextStyle(fontSize: 23)),
-                          SizedBox(width: 8),
-                          Text('✨', style: TextStyle(fontSize: 17)),
-                          SizedBox(width: 8),
-                          Text('🕌', style: TextStyle(fontSize: 20)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // العنوان
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
                         'مواقيت الصلاة - الأقصر',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.amiri(
-                          fontSize: AppTextSizes.appTitle,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFFFFD700),
                           height: 1.25,
@@ -2815,73 +2874,64 @@ class _HomeScreenState extends State<HomeScreen>
                           ],
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('⭐',
-                              style: TextStyle(
-                                  fontSize: AppTextSizes.headerIcon + 2,
-                                  color: Color(0xFFFFD700))),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                _displayName,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.amiri(
-                                  fontSize: AppTextSizes.ownerName,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFFFFE082),
-                                  height: 1.25,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text('⭐',
-                              style: TextStyle(
-                                  fontSize: AppTextSizes.headerIcon + 2,
-                                  color: Color(0xFFFFD700))),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      // شارة المحافظة والشهر - نفس شكل الشاشة
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 18, vertical: 9),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF003B2B).withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: const Color(0xFF00A86B).withOpacity(0.8),
-                              width: 1.5),
+                    ),
+                    const SizedBox(height: 3),
+                    // اسم المصلي
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '⭐ $_displayName ⭐',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.amiri(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFFFE082),
+                          height: 1.25,
                         ),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    // شارة المحافظة والشهر
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF003B2B).withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                            color: const Color(0xFF00A86B).withOpacity(0.8),
+                            width: 1.4),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
                         child: Text(
                           'محافظة الأقصر - شهر ${PrayerData.monthNames[_selectedMonth] ?? "سبتمبر"}',
                           style: GoogleFonts.cairo(
                             fontSize: AppTextSizes.monthBadge,
                             color: const Color(0xFF00D68F),
                             fontWeight: FontWeight.bold,
+                            height: 1.2,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      // الآية (سورة النساء: 103)
-                      _buildAyahBox(),
-                      const SizedBox(height: 12),
-                      // التاريخ
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 9),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF191636),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                              color: const Color(0xFFFFD700).withOpacity(0.35),
-                              width: 1.2),
-                        ),
+                    ),
+                    const SizedBox(height: 6),
+                    // الآية - سطر واحد دايمًا
+                    _buildAyahBox(),
+                    const SizedBox(height: 6),
+                    // التاريخ
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF191636),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                            color: const Color(0xFFFFD700).withOpacity(0.35),
+                            width: 1.2),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
                         child: Text(
                           arabicDate,
                           textAlign: TextAlign.center,
@@ -2889,39 +2939,115 @@ class _HomeScreenState extends State<HomeScreen>
                             fontSize: AppTextSizes.dateBadge,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFFFFD700),
-                            height: 1.3,
+                            height: 1.2,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      // كروت الصلوات - نفس الويدجت المستخدم في الشاشة حرفياً
-                      ...PrayerData.prayerMeta.map((meta) {
-                        final key = meta['key']!;
-                        final adjusted = _adjustTime(key, todayData[key]!);
-                        return _buildPrayerCardItem(
-                          name: meta['name']!,
-                          icon: meta['icon']!,
-                          time12: _format12Hour(adjusted),
-                          isNext: nextPrayerKey == key,
-                          iqamaMinutes: PrayerData.iqamaMinutes[key] ?? 0,
-                        );
-                      }),
-                      const SizedBox(height: 6),
-                      Text(
-                        '🤲 نسألكم الدعاء 🤲',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.cairo(
-                          fontSize: AppTextSizes.footnote,
-                          color: Colors.white60,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    ),
+                    const SizedBox(height: 10),
+                    // شبكة مواعيد الصلوات 2×3 - بتاخد كل المساحة المتبقية
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Expanded(
+                              child: gridRow(cells[0], cells[1])),
+                          const SizedBox(height: 8),
+                          Expanded(
+                              child: gridRow(cells[2], cells[3])),
+                          const SizedBox(height: 8),
+                          Expanded(
+                              child: gridRow(cells[4], cells[5])),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  /// خلية واحدة في شبكة الصورة: الأيقونة + الاسم فوق، والوقت + وقت الإقامة تحت
+  Widget _buildImageGridCell({
+    required String name,
+    required String icon,
+    required String time12,
+    required String iqamaTime,
+    required bool isNext,
+  }) {
+    final Color timeColor =
+        isNext ? const Color(0xFF00D68F) : const Color(0xFFFFD700);
+
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: isNext
+            ? const Color(0xFF00A86B).withOpacity(0.24)
+            : const Color(0xFFFFD700).withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isNext
+              ? const Color(0xFF00D68F)
+              : const Color(0xFFFFD700).withOpacity(0.22),
+          width: isNext ? 1.6 : 1,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(icon, style: const TextStyle(fontSize: 18)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    name,
+                    style: GoogleFonts.cairo(
+                      fontSize: 15,
+                      fontWeight: isNext ? FontWeight.w800 : FontWeight.w700,
+                      color: isNext ? const Color(0xFFFFD700) : Colors.white,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 3),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              time12,
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: timeColor,
+                height: 1.15,
+              ),
+            ),
+          ),
+          if (iqamaTime.isNotEmpty) ...[
+            const SizedBox(height: 1),
+            Text(
+              iqamaTime,
+              style: GoogleFonts.cairo(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: timeColor.withOpacity(0.8),
+                height: 1.2,
+              ),
+            ),
+          ],
         ],
       ),
     );
