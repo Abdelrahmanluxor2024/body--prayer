@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'schedule_poster.dart';
 
 import 'time_adjustment.dart';
 
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0A0A1A),
-        textTheme: GoogleFonts.cairoTextTheme(ThemeData.dark().textTheme),
+        textTheme: ThemeData.dark().textTheme.apply(fontFamily: 'Cairo'),
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFFFD700),
           secondary: Color(0xFF00A86B),
@@ -177,7 +177,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 25),
                       Text(
                         'مواقيت الصلاة',
-                        style: GoogleFonts.amiri(
+                        style: TextStyle(fontFamily: 'Amiri',
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFFFFD700),
@@ -193,7 +193,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 8),
                       Text(
                         '⭐ $_ownerName ⭐',
-                        style: GoogleFonts.amiri(
+                        style: TextStyle(fontFamily: 'Amiri',
                           fontSize: 27,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFFFFE082),
@@ -203,7 +203,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 6),
                       Text(
                         'مواقيت الصلاة - الأقصر',
-                        style: GoogleFonts.cairo(
+                        style: TextStyle(fontFamily: 'Cairo',
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: Colors.white70,
@@ -231,7 +231,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: Center(
                 child: Text(
                   'محافظة الأقصر • جمهورية مصر العربية',
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: 14.5,
                     color: Colors.white54,
                     letterSpacing: 0.5,
@@ -741,10 +741,10 @@ class AppTextSizes {
 
   // كروت مواقيت الصلوات
   static const double prayerIcon = 28;
-  static const double prayerName = 20;
-  static const double prayerTime = 25;
+  static const double prayerName = 28;
+  static const double prayerTime = 28;
   static const double iqamaTime = 14.5;
-  static const double prayerCardMinHeight = 76;
+  static const double prayerCardMinHeight = 86;
 
   // الهيدر
   static const double appTitle = 34;
@@ -964,7 +964,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Text(
                     '🕌 حان الآن موعد أذان',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: Colors.white70,
@@ -976,7 +976,7 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Text(
                       prayerName,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.amiri(
+                      style: TextStyle(fontFamily: 'Amiri',
                         fontSize: 38,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFFFFD700),
@@ -994,7 +994,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     child: Text(
                       'الوقت: $prayerTime12',
-                      style: GoogleFonts.cairo(
+                      style: TextStyle(fontFamily: 'Cairo',
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
                         color: const Color(0xFF00D68F),
@@ -1006,7 +1006,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Text(
                     '﴿ حَافِظُوا عَلَى الصَّلَوَاتِ وَالصَّلَاةِ الْوُسْطَىٰ وَقُومُوا لِلَّهِ قَانِتِينَ ﴾',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.amiri(
+                    style: TextStyle(fontFamily: 'Amiri',
                       fontSize: 16,
                       color: const Color(0xFFFFECB3),
                       height: 1.7,
@@ -1016,7 +1016,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Text(
                     'سورة البقرة: 238',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: 11.5,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFFFFD700).withOpacity(0.65),
@@ -1043,7 +1043,7 @@ class _HomeScreenState extends State<HomeScreen>
                       icon: const Icon(Icons.stop_circle_outlined, size: 28),
                       label: Text(
                         'إيقاف الأذان',
-                        style: GoogleFonts.cairo(
+                        style: TextStyle(fontFamily: 'Cairo',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1054,7 +1054,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Text(
                     'دعاء بعد الأذان:\n«اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ القَائِمَةِ، آتِ مُحَمَّداً الوَسِيلَةَ وَالفَضِيلَةَ، وَابْعَثْهُ مَقَاماً مَحمُوداً الَّذِي وَعَدْتَهُ»',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: 12.5,
                       color: Colors.white60,
                       height: 1.5,
@@ -1177,7 +1177,7 @@ class _HomeScreenState extends State<HomeScreen>
                         const SizedBox(width: 10),
                         Text(
                           'تفعيل أنماط الأذان والتنبيهات',
-                          style: GoogleFonts.amiri(
+                          style: TextStyle(fontFamily: 'Amiri',
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFFFFD700),
@@ -1189,7 +1189,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Text(
                       'لضمان وصول إشعار التذكير قبل الصلاة بـ 15 دقيقة وانطلاق صوت الأذان في موعده بالثانية، يُرجى تفعيل الصلاحيات التالية:',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.cairo(
+                      style: TextStyle(fontFamily: 'Cairo',
                         fontSize: 12.5,
                         color: Colors.white70,
                         height: 1.4,
@@ -1252,7 +1252,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         child: Text(
                           'حفظ ومتابعة التطبيق',
-                          style: GoogleFonts.cairo(
+                          style: TextStyle(fontFamily: 'Cairo',
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
@@ -1299,7 +1299,7 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: 13.5,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -1307,7 +1307,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 Text(
                   desc,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: 10.5,
                     color: Colors.white54,
                   ),
@@ -1327,7 +1327,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             child: Text(
               isGranted ? 'مفعّل ✓' : 'تفعيل',
-              style: GoogleFonts.cairo(fontSize: 11, fontWeight: FontWeight.bold),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: 11, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -1435,7 +1435,7 @@ class _HomeScreenState extends State<HomeScreen>
         title: Text(
           '✏️ تعديل الاسم المعروض',
           textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(
+          style: TextStyle(fontFamily: 'Cairo',
             fontSize: 17,
             fontWeight: FontWeight.bold,
             color: const Color(0xFFFFD700),
@@ -1446,15 +1446,15 @@ class _HomeScreenState extends State<HomeScreen>
           autofocus: true,
           textAlign: TextAlign.center,
           maxLength: 40,
-          style: GoogleFonts.cairo(
+          style: TextStyle(fontFamily: 'Cairo',
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
           decoration: InputDecoration(
-            counterStyle: GoogleFonts.cairo(color: Colors.white38),
+            counterStyle: TextStyle(fontFamily: 'Cairo', color: Colors.white38),
             hintText: 'اكتب الاسم الجديد هنا',
-            hintStyle: GoogleFonts.cairo(color: Colors.white38),
+            hintStyle: TextStyle(fontFamily: 'Cairo', color: Colors.white38),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide:
@@ -1472,7 +1472,7 @@ class _HomeScreenState extends State<HomeScreen>
             onPressed: () => Navigator.of(ctx).pop(false),
             child: Text(
               'إلغاء',
-              style: GoogleFonts.cairo(
+              style: TextStyle(fontFamily: 'Cairo',
                 color: Colors.white70,
                 fontWeight: FontWeight.bold,
               ),
@@ -1489,7 +1489,7 @@ class _HomeScreenState extends State<HomeScreen>
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(
               'حفظ',
-              style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+              style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -1661,7 +1661,7 @@ class _HomeScreenState extends State<HomeScreen>
         content: Text(
           text,
           textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(),
+          style: const TextStyle(fontFamily: 'Cairo'),
         ),
         backgroundColor: const Color(0xFF1E1233),
         behavior: SnackBarBehavior.floating,
@@ -1728,15 +1728,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-            // Offscreen RepaintBoundary for generating prayer schedule card image
-            Positioned(
-              left: -9999,
-              top: -9999,
-              child: RepaintBoundary(
-                key: _scheduleRepaintKey,
-                child: _buildShareableScheduleCard(todayData, arabicDate),
-              ),
-            ),
+
           ],
         ),
       ),
@@ -1775,7 +1767,7 @@ class _HomeScreenState extends State<HomeScreen>
             child: Text(
               'مواقيت الصلاة - الأقصر',
               textAlign: TextAlign.center,
-              style: GoogleFonts.amiri(
+              style: TextStyle(fontFamily: 'Amiri',
                 fontSize: AppTextSizes.appTitle,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFFFFD700),
@@ -1804,7 +1796,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Text(
                     _displayName,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.amiri(
+                    style: TextStyle(fontFamily: 'Amiri',
                       fontSize: AppTextSizes.ownerName,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFFFE082),
@@ -1852,7 +1844,7 @@ class _HomeScreenState extends State<HomeScreen>
                     children: [
                       Text(
                         'شهر ${entry.value}',
-                        style: GoogleFonts.cairo(
+                        style: TextStyle(fontFamily: 'Cairo',
                           fontSize: 14,
                           fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
                           color: isCurrent ? const Color(0xFFFFD700) : Colors.white,
@@ -1880,7 +1872,7 @@ class _HomeScreenState extends State<HomeScreen>
               const SizedBox(width: 8),
               Text(
                 'محافظة الأقصر - شهر ${PrayerData.monthNames[_selectedMonth] ?? "سبتمبر"}',
-                style: GoogleFonts.cairo(
+                style: TextStyle(fontFamily: 'Cairo',
                   fontSize: AppTextSizes.monthBadge,
                   color: const Color(0xFF00D68F),
                   fontWeight: FontWeight.bold,
@@ -1918,7 +1910,7 @@ class _HomeScreenState extends State<HomeScreen>
               PrayerData.prayerAyah,
               textAlign: TextAlign.center,
               maxLines: 1,
-              style: GoogleFonts.amiri(
+              style: TextStyle(fontFamily: 'Amiri',
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFFFFECB3),
@@ -1930,7 +1922,7 @@ class _HomeScreenState extends State<HomeScreen>
           Text(
             PrayerData.prayerAyahReference,
             textAlign: TextAlign.center,
-            style: GoogleFonts.cairo(
+            style: TextStyle(fontFamily: 'Cairo',
               fontSize: AppTextSizes.ayahReference,
               fontWeight: FontWeight.w600,
               color: const Color(0xFFFFD700).withOpacity(0.65),
@@ -1963,7 +1955,7 @@ class _HomeScreenState extends State<HomeScreen>
           Text(
             arabicDate,
             textAlign: TextAlign.center,
-            style: GoogleFonts.cairo(
+            style: TextStyle(fontFamily: 'Cairo',
               fontSize: AppTextSizes.dateLine,
               fontWeight: FontWeight.w700,
               color: Colors.white,
@@ -1981,7 +1973,7 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 Text(
                   liveTime,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: AppTextSizes.liveClock,
                     fontWeight: FontWeight.w900,
                     color: const Color(0xFFFFD700),
@@ -1998,7 +1990,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(width: 8),
                 Text(
                   period,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: AppTextSizes.liveClockPeriod,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFFFFD700),
@@ -2049,7 +2041,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Text(
                     'الوقت المتبقي للصلاة القادمة',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: AppTextSizes.nextLabel,
                       fontWeight: FontWeight.w600,
                       color: Colors.white70,
@@ -2064,7 +2056,7 @@ class _HomeScreenState extends State<HomeScreen>
               child: Text(
                 '${nextPrayer['icon']} ${nextPrayer['name']}',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.cairo(
+                style: TextStyle(fontFamily: 'Cairo',
                   fontSize: AppTextSizes.nextPrayerName,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFFFFD700),
@@ -2077,7 +2069,7 @@ class _HomeScreenState extends State<HomeScreen>
               fit: BoxFit.scaleDown,
               child: Text(
                 countdownStr,
-                style: GoogleFonts.cairo(
+                style: TextStyle(fontFamily: 'Cairo',
                   fontSize: AppTextSizes.nextCountdown,
                   fontWeight: FontWeight.w900,
                   color: const Color(0xFF00D68F),
@@ -2173,7 +2165,7 @@ class _HomeScreenState extends State<HomeScreen>
               alignment: AlignmentDirectional.centerStart,
               child: Text(
                 name,
-                style: GoogleFonts.cairo(
+                style: TextStyle(fontFamily: 'Cairo',
                   fontSize: AppTextSizes.prayerName,
                   fontWeight: isNext ? FontWeight.w800 : FontWeight.w700,
                   color: isNext ? const Color(0xFFFFD700) : Colors.white,
@@ -2193,7 +2185,7 @@ class _HomeScreenState extends State<HomeScreen>
                 fit: BoxFit.scaleDown,
                 child: Text(
                   time12,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: AppTextSizes.prayerTime,
                     fontWeight: FontWeight.w900,
                     color: timeColor,
@@ -2205,7 +2197,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(height: 2),
                 Text(
                   iqamaTime,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: AppTextSizes.iqamaTime,
                     fontWeight: FontWeight.w700,
                     color: timeColor.withOpacity(0.8),
@@ -2239,7 +2231,7 @@ class _HomeScreenState extends State<HomeScreen>
               const SizedBox(width: 10),
               Text(
                 'فجر الغد',
-                style: GoogleFonts.cairo(
+                style: TextStyle(fontFamily: 'Cairo',
                   fontSize: AppTextSizes.cardTitle,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF90CAF9),
@@ -2257,7 +2249,7 @@ class _HomeScreenState extends State<HomeScreen>
                 fit: BoxFit.scaleDown,
                 child: Text(
                   _format12Hour(tomorrowFajr24),
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: AppTextSizes.cardValue,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
@@ -2270,7 +2262,7 @@ class _HomeScreenState extends State<HomeScreen>
                 Text(
                   _formatIqamaTime(
                       tomorrowFajr24, PrayerData.iqamaMinutes['fajr'] ?? 0),
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(fontFamily: 'Cairo',
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: Colors.white70,
@@ -2303,7 +2295,7 @@ class _HomeScreenState extends State<HomeScreen>
               const SizedBox(width: 8),
               Text(
                 'الإعدادات',
-                style: GoogleFonts.cairo(
+                style: TextStyle(fontFamily: 'Cairo',
                   fontSize: AppTextSizes.cardTitle,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFFFFD700),
@@ -2318,13 +2310,13 @@ class _HomeScreenState extends State<HomeScreen>
             activeColor: const Color(0xFFFFD700),
             title: Text(
               '☀️ التوقيت الصيفي',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardBody, color: Colors.white),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardBody, color: Colors.white),
             ),
             subtitle: Text(
               _isSummerTime
                   ? 'مفعل (التوقيت الصيفي المعتمد بالجدول)'
                   : 'غير مفعل (التوقيت الشتوي - تأخير ساعة)',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardNote, color: Colors.white54),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardNote, color: Colors.white54),
             ),
             value: _isSummerTime,
             onChanged: (val) {
@@ -2338,11 +2330,11 @@ class _HomeScreenState extends State<HomeScreen>
             activeColor: const Color(0xFFFFD700),
             title: Text(
               '🕐 إظهار وقت الإقامة',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardBody, color: Colors.white),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardBody, color: Colors.white),
             ),
             subtitle: Text(
               'عرض وقت الإقامة تحت وقت كل صلاة (زي العصر 4:00 والإقامة 4:15)',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardNote, color: Colors.white54),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardNote, color: Colors.white54),
             ),
             value: _showIqama,
             onChanged: (val) {
@@ -2356,11 +2348,11 @@ class _HomeScreenState extends State<HomeScreen>
             activeColor: const Color(0xFFFFD700),
             title: Text(
               '🔔 تنبيهات وصوت الأذان',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardBody, color: Colors.white),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardBody, color: Colors.white),
             ),
             subtitle: Text(
               'تشغيل صوت الأذان بصوت المؤذن وشاشة المنبه عند حلول وقت الصلاة',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardNote, color: Colors.white54),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardNote, color: Colors.white54),
             ),
             value: _athanNotifications,
             onChanged: (val) {
@@ -2374,11 +2366,11 @@ class _HomeScreenState extends State<HomeScreen>
             activeColor: const Color(0xFF00D68F),
             title: Text(
               '⏰ التنبيه قبل الصلاة بـ 15 دقيقة',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardBody, color: Colors.white),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardBody, color: Colors.white),
             ),
             subtitle: Text(
               'إشعار وتنبيه هادئ باقتراب وقت الصلاة قبل دخولها بربع ساعة',
-              style: GoogleFonts.cairo(fontSize: AppTextSizes.cardNote, color: Colors.white54),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: AppTextSizes.cardNote, color: Colors.white54),
             ),
             value: _reminder15Min,
             onChanged: (val) {
@@ -2422,7 +2414,7 @@ class _HomeScreenState extends State<HomeScreen>
                     _isPlayingAudio
                         ? 'إيقاف تشغيل صوت الأذان'
                         : 'تجربة واستماع لصوت الأذان (المؤذن)',
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: 14.5,
                       fontWeight: FontWeight.bold,
                       color: _isPlayingAudio ? const Color(0xFFEF5350) : const Color(0xFFFFD700),
@@ -2466,7 +2458,7 @@ class _HomeScreenState extends State<HomeScreen>
                           children: [
                             Text(
                               '🔔 السماح بإرسال الإشعارات',
-                              style: GoogleFonts.cairo(
+                              style: TextStyle(fontFamily: 'Cairo',
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.bold,
                                 color: _isNotificationGranted ? const Color(0xFF00D68F) : const Color(0xFFBA68C8),
@@ -2481,14 +2473,14 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               child: Text(
                                 _isNotificationGranted ? 'مفعل ✓' : 'اضغط للتفعيل',
-                                style: GoogleFonts.cairo(fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.black),
+                                style: TextStyle(fontFamily: 'Cairo', fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.black),
                               ),
                             ),
                           ],
                         ),
                         Text(
                           'مطلوب لإرسال إشعار التنبيه قبل الصلاة بـ 15 دقيقة',
-                          style: GoogleFonts.cairo(fontSize: 11.5, color: Colors.white54),
+                          style: TextStyle(fontFamily: 'Cairo', fontSize: 11.5, color: Colors.white54),
                         ),
                       ],
                     ),
@@ -2532,7 +2524,7 @@ class _HomeScreenState extends State<HomeScreen>
                           children: [
                             Text(
                               '🪟 السماح بالظهور فوق التطبيقات',
-                              style: GoogleFonts.cairo(
+                              style: TextStyle(fontFamily: 'Cairo',
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.bold,
                                 color: _isOverlayGranted ? const Color(0xFF00D68F) : const Color(0xFF42A5F5),
@@ -2547,14 +2539,14 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               child: Text(
                                 _isOverlayGranted ? 'مفعل ✓' : 'اضغط للتفعيل',
-                                style: GoogleFonts.cairo(fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.black),
+                                style: TextStyle(fontFamily: 'Cairo', fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.black),
                               ),
                             ),
                           ],
                         ),
                         Text(
                           'مطلوب لعرض شاشة الأذان فوق التطبيقات الأخرى',
-                          style: GoogleFonts.cairo(fontSize: 11.5, color: Colors.white54),
+                          style: TextStyle(fontFamily: 'Cairo', fontSize: 11.5, color: Colors.white54),
                         ),
                       ],
                     ),
@@ -2598,7 +2590,7 @@ class _HomeScreenState extends State<HomeScreen>
                           children: [
                             Text(
                               '🔋 إيقاف تحسين البطارية للتطبيق',
-                              style: GoogleFonts.cairo(
+                              style: TextStyle(fontFamily: 'Cairo',
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.bold,
                                 color: _isBatteryOptimized ? const Color(0xFF00D68F) : const Color(0xFF66BB6A),
@@ -2613,14 +2605,14 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               child: Text(
                                 _isBatteryOptimized ? 'مفعل ✓' : 'اضغط للتفعيل',
-                                style: GoogleFonts.cairo(fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.black),
+                                style: TextStyle(fontFamily: 'Cairo', fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.black),
                               ),
                             ),
                           ],
                         ),
                         Text(
                           'يمنع نظام Android من إيقاف التطبيق في الخلفية',
-                          style: GoogleFonts.cairo(fontSize: 11.5, color: Colors.white54),
+                          style: TextStyle(fontFamily: 'Cairo', fontSize: 11.5, color: Colors.white54),
                         ),
                       ],
                     ),
@@ -2653,7 +2645,7 @@ class _HomeScreenState extends State<HomeScreen>
                   const SizedBox(width: 8),
                   Text(
                     'تفعيل كل الأنماط والصلاحيات دفعة واحدة',
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: 14.5,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFFFD700),
@@ -2673,7 +2665,7 @@ class _HomeScreenState extends State<HomeScreen>
       width: double.infinity,
       height: AppTextSizes.buttonHeight,
       child: ElevatedButton.icon(
-        onPressed: _isDownloadingImage ? null : () => _captureAndSaveScheduleImage(todayData, arabicDate),
+        onPressed: _isDownloadingImage ? null : () => _choosePosterTheme(todayData, arabicDate),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00A86B),
           foregroundColor: Colors.white,
@@ -2695,7 +2687,7 @@ class _HomeScreenState extends State<HomeScreen>
           fit: BoxFit.scaleDown,
           child: Text(
             _isDownloadingImage ? 'جاري إنشاء وحفظ الصورة...' : 'تحميل ميعاد صلاة اليوم',
-            style: GoogleFonts.cairo(
+            style: TextStyle(fontFamily: 'Cairo',
               fontSize: AppTextSizes.buttonLabel,
               fontWeight: FontWeight.bold,
             ),
@@ -2705,7 +2697,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Future<void> _captureAndSaveScheduleImage(Map<String, dynamic> todayData, String arabicDate) async {
+  Future<bool> _captureAndSaveScheduleImage() async {
     setState(() => _isDownloadingImage = true);
 
     try {
@@ -2713,8 +2705,7 @@ class _HomeScreenState extends State<HomeScreen>
       final boundary = _scheduleRepaintKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) {
         _showSnackBar('تعذر تجهيز الصورة، حاول مجدداً');
-        setState(() => _isDownloadingImage = false);
-        return;
+        return false;
       }
 
       // الصورة بتتعمل بنفس عرض الشاشة، وبنحدد الدقة على أساس العرض ده
@@ -2728,8 +2719,7 @@ class _HomeScreenState extends State<HomeScreen>
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) {
         _showSnackBar('تعذر إنشاء ملف الصورة');
-        setState(() => _isDownloadingImage = false);
-        return;
+        return false;
       }
 
       final pngBytes = byteData.buffer.asUint8List();
@@ -2742,11 +2732,13 @@ class _HomeScreenState extends State<HomeScreen>
 
       if (success == true) {
         _showSnackBar('✅ تم حفظ ميعاد صلاة اليوم في المعرض بنجاح');
-      } else {
-        _showSnackBar('تعذر حفظ الصورة');
+        return true;
       }
+      _showSnackBar('تعذر حفظ الصورة');
+      return false;
     } catch (e) {
       _showSnackBar('حدث خطأ أثناء حفظ الصورة');
+      return false;
     } finally {
       if (mounted) {
         setState(() => _isDownloadingImage = false);
@@ -2754,296 +2746,85 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  /// كارت الصورة المحفوظة - بمقاس 3:4 (عرض:طول) ≈ 1080×1440 بكسل،
-  /// شكل مناسب لـ post على فيسبوك أو حالة واتساب من غير ما تبقى صورة طولي كاملة الشاشة:
-  /// نفس هوية الشاشة (العنوان + الاسم + الشارات + الآية في سطر واحد)
-  /// ومواعيد الصلوات في شبكة 2×3 (الصلوات الخمس + فجر الغد).
-  Widget _buildShareableScheduleCard(
-      Map<String, dynamic> todayData, String arabicDate) {
-    // عرض الصورة = عرض شاشة الموبايل، والطول = العرض × 4/3 (مقاس 3:4)
-    final double screenWidth = MediaQuery.sizeOf(context).width;
-    final double imageWidth = screenWidth > 0 ? screenWidth : 360.0;
-    final double imageHeight = imageWidth * 4.0 / 3.0;
-    final String? nextPrayerKey = _getNextPrayerInfo()['key'] as String?;
-    final String tomorrowFajr24 = _getTomorrowFajr();
+  Future<void> _choosePosterTheme(Map<String, dynamic> todayData, String arabicDate) async {
+    var selected = 0;
+    var saving = false;
+    final prayers = PrayerData.prayerMeta.map((meta) => PosterPrayer(
+      meta['name']!, meta['icon']!, _format12Hour(_adjustTime(todayData[meta['key']]!)),
+    )).toList();
 
-    // أسماء قصيرة منضبطه للخلية (الأيقونة بتوضح الصلاة)
-    const Map<String, String> shortNames = {
-      'fajr': 'الفجر',
-      'dhuhr': 'الظهر',
-      'asr': 'العصر',
-      'maghrib': 'المغرب',
-      'isha': 'العشاء',
-    };
-
-    // خلايا الشبكة الستة: الصلوات الخمس + فجر الغد
-    final List<Widget> cells = PrayerData.prayerMeta.map((meta) {
-      final key = meta['key']!;
-      final adjusted = _adjustTime(todayData[key]!);
-      final iqama = PrayerData.iqamaMinutes[key] ?? 0;
-      return _buildImageGridCell(
-        name: shortNames[key] ?? meta['name']!,
-        icon: meta['icon']!,
-        time12: _format12Hour(adjusted),
-        iqamaTime: _showIqama ? _formatIqamaTime(adjusted, iqama) : '',
-        isNext: nextPrayerKey == key,
-      );
-    }).toList()
-      ..add(_buildImageGridCell(
-        name: 'فجر الغد',
-        icon: '🌅',
-        time12: _format12Hour(tomorrowFajr24),
-        iqamaTime: _showIqama
-            ? _formatIqamaTime(tomorrowFajr24,
-                PrayerData.iqamaMinutes['fajr'] ?? 0)
-            : '',
-        isNext: false,
-      ));
-
-    Widget gridRow(Widget a, Widget b) {
-      return Row(
-        children: [
-          Expanded(child: a),
-          const SizedBox(width: 8),
-          Expanded(child: b),
-        ],
-      );
-    }
-
-    return Container(
-      width: imageWidth,
-      height: imageHeight,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF0A0A1A), Color(0xFF160B28), Color(0xFF0D1117)],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // نجوم الخلفية - نفس شكل شاشة التطبيق
-          Positioned.fill(
-            child: CustomPaint(painter: StarsPainter(0.6)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF0D0B1C).withOpacity(0.94),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: const Color(0xFFFFD700).withOpacity(0.5),
-                  width: 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.7),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // العنوان
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'مواقيت الصلاة - الأقصر',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.amiri(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFFFFD700),
-                          height: 1.25,
-                          shadows: [
-                            Shadow(
-                              color: const Color(0xFFFFD700).withOpacity(0.5),
-                              blurRadius: 16,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    // اسم المصلي
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        '⭐ $_displayName ⭐',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.amiri(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFFFFE082),
-                          height: 1.25,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    // شارة المحافظة والشهر
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 7),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF003B2B).withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                            color: const Color(0xFF00A86B).withOpacity(0.8),
-                            width: 1.4),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          'محافظة الأقصر - شهر ${PrayerData.monthNames[_selectedMonth] ?? "سبتمبر"}',
-                          style: GoogleFonts.cairo(
-                            fontSize: AppTextSizes.monthBadge,
-                            color: const Color(0xFF00D68F),
-                            fontWeight: FontWeight.bold,
-                            height: 1.2,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    // الآية - سطر واحد دايمًا
-                    _buildAyahBox(),
-                    const SizedBox(height: 6),
-                    // التاريخ
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18, vertical: 7),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF191636),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                            color: const Color(0xFFFFD700).withOpacity(0.35),
-                            width: 1.2),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          arabicDate,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.cairo(
-                            fontSize: AppTextSizes.dateBadge,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFFFD700),
-                            height: 1.2,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // شبكة مواعيد الصلوات 2×3 - بتاخد كل المساحة المتبقية
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Expanded(
-                              child: gridRow(cells[0], cells[1])),
-                          const SizedBox(height: 8),
-                          Expanded(
-                              child: gridRow(cells[2], cells[3])),
-                          const SizedBox(height: 8),
-                          Expanded(
-                              child: gridRow(cells[4], cells[5])),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// خلية واحدة في شبكة الصورة: الأيقونة + الاسم فوق، والوقت + وقت الإقامة تحت
-  Widget _buildImageGridCell({
-    required String name,
-    required String icon,
-    required String time12,
-    required String iqamaTime,
-    required bool isNext,
-  }) {
-    final Color timeColor =
-        isNext ? const Color(0xFF00D68F) : const Color(0xFFFFD700);
-
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: isNext
-            ? const Color(0xFF00A86B).withOpacity(0.24)
-            : const Color(0xFFFFD700).withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isNext
-              ? const Color(0xFF00D68F)
-              : const Color(0xFFFFD700).withOpacity(0.22),
-          width: isNext ? 1.6 : 1,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(icon, style: const TextStyle(fontSize: 18)),
-              const SizedBox(width: 6),
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    name,
-                    style: GoogleFonts.cairo(
-                      fontSize: 15,
-                      fontWeight: isNext ? FontWeight.w800 : FontWeight.w700,
-                      color: isNext ? const Color(0xFFFFD700) : Colors.white,
-                      height: 1.2,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 3),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              time12,
-              style: GoogleFonts.cairo(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: timeColor,
-                height: 1.15,
-              ),
-            ),
-          ),
-          if (iqamaTime.isNotEmpty) ...[
-            const SizedBox(height: 1),
-            Text(
-              iqamaTime,
-              style: GoogleFonts.cairo(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w700,
-                color: timeColor.withOpacity(0.8),
-                height: 1.2,
-              ),
-            ),
-          ],
-        ],
-      ),
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xff101426),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (sheetContext) => StatefulBuilder(builder: (sheetContext, updateSheet) {
+        return SafeArea(child: SizedBox(height: MediaQuery.sizeOf(sheetContext).height * .92,
+          child: Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 12), child: Column(children: [
+            Row(children: [
+              IconButton(onPressed: saving ? null : () => Navigator.pop(sheetContext),
+                icon: const Icon(Icons.close, color: Colors.white)),
+              const Expanded(child: Text('اختار خلفية مواقيت اليوم', textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'Cairo', fontSize: 19, fontWeight: FontWeight.bold, color: Colors.white))),
+              const SizedBox(width: 48),
+            ]),
+            const Text('معاينة الصورة قبل الحفظ', style: TextStyle(fontFamily: 'Cairo', color: Colors.white70)),
+            const SizedBox(height: 6),
+            Expanded(child: Center(child: FittedBox(fit: BoxFit.contain, child: RepaintBoundary(
+              key: _scheduleRepaintKey,
+              child: SchedulePoster(theme: posterThemes[selected], name: _displayName,
+                month: PrayerData.monthNames[_selectedMonth] ?? 'سبتمبر', date: arabicDate,
+                ayah: PrayerData.prayerAyah, prayers: prayers),
+            )))),
+            const SizedBox(height: 10),
+            SizedBox(height: 76, child: ListView.separated(
+              scrollDirection: Axis.horizontal, itemCount: posterThemes.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (_, index) {
+                final theme = posterThemes[index];
+                return Semantics(label: 'خلفية ${theme.name}', selected: selected == index,
+                  button: true, child: InkWell(onTap: saving ? null : () => updateSheet(() => selected = index),
+                    borderRadius: BorderRadius.circular(12), child: Container(width: 84,
+                      padding: const EdgeInsets.all(5), decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [theme.top, theme.bottom]),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: selected == index ? theme.gold : Colors.white24,
+                          width: selected == index ? 2.5 : 1)),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        Icon(selected == index ? Icons.check_circle : Icons.auto_awesome,
+                          color: theme.gold, size: 20),
+                        const SizedBox(height: 3),
+                        Text(theme.name, textAlign: TextAlign.center, maxLines: 2,
+                          style: const TextStyle(fontFamily: 'Cairo', fontSize: 10, height: 1.1,
+                            color: Colors.white, fontWeight: FontWeight.bold)),
+                      ]))));
+              },
+            )),
+            const SizedBox(height: 10),
+            SizedBox(width: double.infinity, height: 52, child: ElevatedButton.icon(
+              onPressed: saving ? null : () async {
+                updateSheet(() => saving = true);
+                final success = await _captureAndSaveScheduleImage();
+                if (sheetContext.mounted) {
+                  if (success) {
+                    Navigator.pop(sheetContext);
+                  } else {
+                    updateSheet(() => saving = false);
+                    ScaffoldMessenger.of(sheetContext).showSnackBar(const SnackBar(
+                      content: Text('تعذر حفظ الصورة، حاول مرة أخرى'),
+                    ));
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xffd6ac4f),
+                foregroundColor: const Color(0xff17140c), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+              icon: saving ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.download_rounded),
+              label: Text(saving ? 'جاري حفظ الصورة...' : 'حفظ الصورة في المعرض',
+                style: const TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.bold, fontSize: 16)),
+            )),
+          ]))));
+      }),
     );
   }
 
@@ -3067,7 +2848,7 @@ class _HomeScreenState extends State<HomeScreen>
           fit: BoxFit.scaleDown,
           child: Text(
             'عرض جدول شهر ${PrayerData.monthNames[_selectedMonth] ?? "سبتمبر"} كاملاً',
-            style: GoogleFonts.cairo(
+            style: TextStyle(fontFamily: 'Cairo',
               fontSize: AppTextSizes.buttonLabel,
               fontWeight: FontWeight.bold,
             ),
@@ -3137,7 +2918,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 children: [
                                   Text(
                                     'شهر ${entry.value}',
-                                    style: GoogleFonts.cairo(
+                                    style: TextStyle(fontFamily: 'Cairo',
                                       fontSize: 14,
                                       fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
                                       color: isCurrent ? const Color(0xFFFFD700) : Colors.white,
@@ -3162,7 +2943,7 @@ class _HomeScreenState extends State<HomeScreen>
                             children: [
                               Text(
                                 'الأقصر - شهر ${PrayerData.monthNames[_selectedMonth] ?? "سبتمبر"}',
-                                style: GoogleFonts.cairo(
+                                style: TextStyle(fontFamily: 'Cairo',
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   color: const Color(0xFFFFD700),
@@ -3215,7 +2996,7 @@ class _HomeScreenState extends State<HomeScreen>
                               children: [
                                 Text(
                                   'اليوم: ${item['day']}',
-                                  style: GoogleFonts.cairo(
+                                  style: TextStyle(fontFamily: 'Cairo',
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                     color: isToday
@@ -3233,7 +3014,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                     child: Text(
                                       'اليوم الحالي',
-                                      style: GoogleFonts.cairo(
+                                      style: TextStyle(fontFamily: 'Cairo',
                                           fontSize: 11,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black),
@@ -3281,14 +3062,14 @@ class _HomeScreenState extends State<HomeScreen>
     return Column(
       children: [
         Text(label,
-            style: GoogleFonts.cairo(
+            style: TextStyle(fontFamily: 'Cairo',
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.white70)),
         const SizedBox(height: 2),
         Text(
           time12,
-          style: GoogleFonts.cairo(
+          style: TextStyle(fontFamily: 'Cairo',
             fontSize: 15,
             fontWeight: FontWeight.w800,
             color: const Color(0xFFFFD700),
@@ -3325,7 +3106,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Text(
                     'للتواصل مع عبد الرحمن ياسر الاسيوطي',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: AppTextSizes.cardTitle,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFFFD700),
@@ -3338,7 +3119,7 @@ class _HomeScreenState extends State<HomeScreen>
           const SizedBox(height: 6),
           Text(
             '\u202A$displayPhone\u202C',
-            style: GoogleFonts.cairo(
+            style: TextStyle(fontFamily: 'Cairo',
               fontSize: 22,
               fontWeight: FontWeight.w900,
               color: const Color(0xFFFFE082),
@@ -3362,7 +3143,7 @@ class _HomeScreenState extends State<HomeScreen>
                   icon: const Icon(Icons.phone, size: 20),
                   label: Text(
                     'اتصال مباشر',
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: AppTextSizes.cardBody,
                       fontWeight: FontWeight.bold,
                     ),
@@ -3384,7 +3165,7 @@ class _HomeScreenState extends State<HomeScreen>
                   icon: const Text('💬', style: TextStyle(fontSize: 18)),
                   label: Text(
                     'واتساب',
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(fontFamily: 'Cairo',
                       fontSize: AppTextSizes.cardBody,
                       fontWeight: FontWeight.bold,
                     ),
@@ -3403,7 +3184,7 @@ class _HomeScreenState extends State<HomeScreen>
       children: [
         Text(
           '🤲 نسألكم الدعاء 🤲',
-          style: GoogleFonts.amiri(
+          style: TextStyle(fontFamily: 'Amiri',
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: const Color(0xFFFFD700),
@@ -3412,7 +3193,7 @@ class _HomeScreenState extends State<HomeScreen>
         const SizedBox(height: 4),
         Text(
           'جميع الحقوق محفوظة © 2026',
-          style: GoogleFonts.cairo(
+          style: TextStyle(fontFamily: 'Cairo',
             fontSize: 11.5,
             color: Colors.white38,
           ),

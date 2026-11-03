@@ -14,7 +14,6 @@ dependencies:
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.1
   intl: any
-  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +22,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo.ttf
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+        - asset: assets/fonts/Amiri-Bold.ttf
+          weight: 700
 
   assets:
     - assets/images/
