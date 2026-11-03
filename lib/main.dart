@@ -2708,15 +2708,15 @@ class _HomeScreenState extends State<HomeScreen>
         return false;
       }
 
-      // الصورة بتتعمل بنفس عرض الشاشة، وبنحدد الدقة على أساس العرض ده
-      // عشان تخرج دايماً بحجم واضح وثابت (~1080 بكسل عرض) على أي موبايل
+      // تصدير بدقة 1440 بكسل عرض بغض النظر عن حجم شاشة المعاينة.
       final double cardWidth = boundary.size.width;
       final double pixelRatio = cardWidth > 0
-          ? (1080.0 / cardWidth).clamp(2.0, 4.0).toDouble()
+          ? (1440.0 / cardWidth).clamp(2.0, 4.0).toDouble()
           : 3.0;
 
       final image = await boundary.toImage(pixelRatio: pixelRatio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      image.dispose();
       if (byteData == null) {
         _showSnackBar('تعذر إنشاء ملف الصورة');
         return false;

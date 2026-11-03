@@ -27,7 +27,7 @@ class PosterPrayer {
   final String name, icon, time;
 }
 
-/// A fixed logical canvas, so the preview and the exported PNG match exactly.
+/// A fixed-size canvas: preview and exported image always use the same layout.
 class SchedulePoster extends StatelessWidget {
   const SchedulePoster({super.key, required this.theme, required this.name,
     required this.month, required this.date, required this.ayah, required this.prayers});
@@ -35,64 +35,87 @@ class SchedulePoster extends StatelessWidget {
   final String name, month, date, ayah;
   final List<PosterPrayer> prayers;
 
-  TextStyle _cairo(double size, Color color, {FontWeight weight = FontWeight.w800}) =>
-      TextStyle(fontFamily: 'Cairo', fontSize: size, color: color, fontWeight: weight, height: 1.15);
+  static const double canvasWidth = 400;
+  static const double canvasHeight = 720;
 
-  Widget _fit(String value, TextStyle style) => FittedBox(
-    fit: BoxFit.scaleDown, child: Text(value, maxLines: 1, textAlign: TextAlign.center, style: style));
+  TextStyle _cairo(double size, Color color, {FontWeight weight = FontWeight.w800}) =>
+      TextStyle(fontFamily: 'Cairo', fontSize: size, color: color,
+          fontWeight: weight, height: 1.15);
+
+  Widget _fit(String value, TextStyle style, {Alignment alignment = Alignment.center}) =>
+      FittedBox(fit: BoxFit.scaleDown, alignment: alignment,
+        child: Text(value, maxLines: 1, textAlign: TextAlign.center, style: style));
+
+  Widget _prayerRow(PosterPrayer prayer) {
+    return Expanded(child: Container(
+      margin: const EdgeInsets.only(bottom: 7),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+          colors: [Color.lerp(theme.panel, Colors.white, .07)!, theme.panel]),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: theme.gold.withOpacity(.55)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(.28), blurRadius: 8, offset: const Offset(0, 3))],
+      ),
+      child: Row(children: [
+        Container(width: 4, margin: const EdgeInsets.symmetric(vertical: 13),
+          decoration: BoxDecoration(color: theme.gold, borderRadius: BorderRadius.circular(4))),
+        const SizedBox(width: 9),
+        SizedBox(width: 36, child: Text(prayer.icon, textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 28, height: 1))),
+        const SizedBox(width: 7),
+        Expanded(flex: 6, child: _fit(prayer.name, _cairo(30, Colors.white, weight: FontWeight.w900),
+          alignment: Alignment.centerRight)),
+        const SizedBox(width: 8),
+        Container(width: 1, height: 32, color: theme.gold.withOpacity(.3)),
+        const SizedBox(width: 8),
+        Expanded(flex: 4, child: _fit(prayer.time, _cairo(29, theme.gold, weight: FontWeight.w900),
+          alignment: Alignment.centerLeft)),
+        const SizedBox(width: 12),
+      ]),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SizedBox(width: 400, height: 680, child: DecoratedBox(
-        decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft,
-          end: Alignment.bottomRight, colors: [theme.top, theme.bottom, theme.bottom])),
-        child: Stack(children: [
-          Positioned.fill(child: CustomPaint(painter: _OrnamentPainter(theme.gold))),
-          Positioned.fill(child: Container(margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(border: Border.all(color: theme.gold.withOpacity(.8), width: 1.4),
-              borderRadius: BorderRadius.circular(22)))),
-          Padding(padding: const EdgeInsets.fromLTRB(22, 17, 22, 15), child: Column(children: [
-            Text('✦  ☾  ✦', style: _cairo(25, theme.gold)),
-            const SizedBox(height: 2),
-            SizedBox(height: 37, child: _fit('مواقيت الصلاة - الأقصر', _cairo(32, theme.gold, weight: FontWeight.w900))),
-            SizedBox(height: 35, child: _fit('✦  $name  ✦', _cairo(25, theme.gold))),
-            const SizedBox(height: 5),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              decoration: BoxDecoration(color: const Color(0xff103e36), borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xff78d9b4).withOpacity(.6))),
-              child: _fit('محافظة الأقصر - شهر $month', _cairo(16, const Color(0xffb9f2d5)))),
-            const SizedBox(height: 8),
-            Container(width: double.infinity, height: 39, padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(color: theme.panel.withOpacity(.9), borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: theme.gold.withOpacity(.35))),
-              child: _fit(ayah, const TextStyle(fontFamily: 'Amiri', fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white))),
-            const SizedBox(height: 8),
-            Container(height: 35, padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              decoration: BoxDecoration(color: theme.panel, borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: theme.gold.withOpacity(.55))),
-              child: _fit(date, _cairo(18, theme.gold))),
-            const SizedBox(height: 10),
-            ...prayers.map((prayer) => Expanded(child: Container(
-              margin: const EdgeInsets.only(bottom: 6),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(color: theme.panel.withOpacity(.92), borderRadius: BorderRadius.circular(13),
-                border: Border.all(color: theme.gold.withOpacity(.55))),
-              child: Row(children: [
-                Text(prayer.icon, style: const TextStyle(fontSize: 27)),
-                const SizedBox(width: 8),
-                Expanded(flex: 6, child: Align(alignment: Alignment.centerRight,
-                  child: _fit(prayer.name, _cairo(29, Colors.white, weight: FontWeight.w900)))),
-                const SizedBox(width: 8),
-                Expanded(flex: 4, child: Align(alignment: Alignment.centerLeft,
-                  child: _fit(prayer.time, _cairo(23, theme.gold, weight: FontWeight.w900)))),
-              ])))),
-            const SizedBox(height: 2),
-            SizedBox(height: 22, child: _fit('✦  نسألكم الدعاء  •  $name  ✦', _cairo(15, theme.gold))),
-          ])),
-        ]),
-      )),
+    // Accessibility settings on the phone must not distort the exported poster.
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+      child: Directionality(textDirection: TextDirection.rtl,
+        child: SizedBox(width: canvasWidth, height: canvasHeight, child: DecoratedBox(
+          decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft,
+            end: Alignment.bottomRight, colors: [theme.top, theme.bottom, theme.bottom])),
+          child: Stack(children: [
+            Positioned.fill(child: CustomPaint(painter: _OrnamentPainter(theme.gold))),
+            Positioned.fill(child: Container(margin: const EdgeInsets.all(7),
+              decoration: BoxDecoration(border: Border.all(color: theme.gold.withOpacity(.85), width: 1.3),
+                borderRadius: BorderRadius.circular(22)))),
+            Positioned.fill(child: Container(margin: const EdgeInsets.all(11),
+              decoration: BoxDecoration(border: Border.all(color: theme.gold.withOpacity(.20)),
+                borderRadius: BorderRadius.circular(19)))),
+            Padding(padding: const EdgeInsets.fromLTRB(20, 15, 20, 14), child: Column(children: [
+              SizedBox(height: 29, child: _fit('✦   ☾   ✦', _cairo(25, theme.gold))),
+              SizedBox(height: 40, child: _fit('مواقيت الصلاة', _cairo(35, theme.gold, weight: FontWeight.w900))),
+              SizedBox(height: 30, child: _fit('محافظة الأقصر  •  شهر $month', _cairo(20, Colors.white))),
+              const SizedBox(height: 4),
+              SizedBox(height: 31, child: _fit('✦  $name  ✦', _cairo(23, theme.gold))),
+              const SizedBox(height: 8),
+              Container(width: double.infinity, height: 41, padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(color: Colors.black.withOpacity(.28), borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: theme.gold.withOpacity(.35))),
+                child: _fit(ayah, const TextStyle(fontFamily: 'Amiri', fontSize: 22,
+                  fontWeight: FontWeight.bold, color: Colors.white, height: 1.1))),
+              const SizedBox(height: 8),
+              Container(height: 37, padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                decoration: BoxDecoration(color: theme.panel, borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: theme.gold.withOpacity(.6))),
+                child: _fit(date, _cairo(20, theme.gold, weight: FontWeight.w900))),
+              const SizedBox(height: 12),
+              ...prayers.map(_prayerRow),
+              const SizedBox(height: 1),
+              SizedBox(height: 22, child: _fit('✦  نسألكم الدعاء  ✦', _cairo(16, theme.gold))),
+            ])),
+          ]),
+        ))),
     );
   }
 }
