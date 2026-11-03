@@ -9,6 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'time_adjustment.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -868,7 +870,7 @@ class _HomeScreenState extends State<HomeScreen>
         final key = meta['key']!;
         if (key == 'sunrise') continue;
 
-        final adjusted = _adjustTime(key, todayData[key]!);
+        final adjusted = _adjustTime(todayData[key]!);
         final parts = adjusted.split(':');
         final pHour = int.parse(parts[0]);
         final pMinute = int.parse(parts[1]);
@@ -1080,7 +1082,7 @@ class _HomeScreenState extends State<HomeScreen>
       final key = meta['key']!;
       if (key == 'sunrise') continue;
 
-      final adjusted = _adjustTime(key, todayData[key]!);
+      final adjusted = _adjustTime(todayData[key]!);
       final parts = adjusted.split(':');
       final pHour = int.parse(parts[0]);
       final pMinute = int.parse(parts[1]);
@@ -1510,16 +1512,8 @@ class _HomeScreenState extends State<HomeScreen>
     controller.dispose();
   }
 
-  String _adjustTime(String prayerKey, String time24) {
-    if (!_isSummerTime && prayerKey != 'dhuhr') {
-      final parts = time24.split(':');
-      int hour = int.parse(parts[0]);
-      int minute = int.parse(parts[1]);
-      hour = (hour - 1 + 24) % 24;
-      return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
-    }
-    return time24;
-  }
+  String _adjustTime(String time24) =>
+      adjustPrayerTime(time24, isSummerTime: _isSummerTime);
 
   String _format12Hour(String time24) {
     final parts = time24.split(':');
@@ -1569,13 +1563,13 @@ class _HomeScreenState extends State<HomeScreen>
       final nextMonth = _selectedMonth == 12 ? 9 : _selectedMonth + 1;
       final nextMonthList =
           PrayerData.allMonthsTimes[nextMonth] ?? PrayerData.septemberTimes;
-      return _adjustTime('fajr', nextMonthList.first['fajr']);
+      return _adjustTime(nextMonthList.first['fajr']);
     }
     final tomorrowData = monthList.firstWhere(
       (element) => element['day'] == tomorrowDay,
       orElse: () => monthList.first,
     );
-    return _adjustTime('fajr', tomorrowData['fajr']);
+    return _adjustTime(tomorrowData['fajr']);
   }
 
   Map<String, dynamic> _getNextPrayerInfo() {
@@ -1585,7 +1579,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     for (var meta in PrayerData.prayerMeta) {
       final key = meta['key']!;
-      final adjusted = _adjustTime(key, todayData[key]!);
+      final adjusted = _adjustTime(todayData[key]!);
       final parts = adjusted.split(':');
       final pMinutes = int.parse(parts[0]) * 60 + int.parse(parts[1]);
 
@@ -2106,7 +2100,7 @@ class _HomeScreenState extends State<HomeScreen>
         final name = meta['name']!;
         final icon = meta['icon']!;
         final rawTime = todayData[key]!;
-        final adjusted = _adjustTime(key, rawTime);
+        final adjusted = _adjustTime(rawTime);
         final formatted12 = _format12Hour(adjusted);
         final isNext = (nextPrayerKey == key);
         final iqama = PrayerData.iqamaMinutes[key] ?? 0;
@@ -2785,7 +2779,7 @@ class _HomeScreenState extends State<HomeScreen>
     // خلايا الشبكة الستة: الصلوات الخمس + فجر الغد
     final List<Widget> cells = PrayerData.prayerMeta.map((meta) {
       final key = meta['key']!;
-      final adjusted = _adjustTime(key, todayData[key]!);
+      final adjusted = _adjustTime(todayData[key]!);
       final iqama = PrayerData.iqamaMinutes[key] ?? 0;
       return _buildImageGridCell(
         name: shortNames[key] ?? meta['name']!,
@@ -3252,14 +3246,14 @@ class _HomeScreenState extends State<HomeScreen>
                               mainAxisAlignment:
                                   MainAxisAlignment.spaceAround,
                               children: [
-                                _tableTimeItem('فجر', _adjustTime('fajr', item['fajr'])),
+                                _tableTimeItem('فجر', _adjustTime(item['fajr'])),
                                 _tableTimeItem(
-                                    'شروق', _adjustTime('sunrise', item['sunrise'])),
-                                _tableTimeItem('ظهر', _adjustTime('dhuhr', item['dhuhr'])),
-                                _tableTimeItem('عصر', _adjustTime('asr', item['asr'])),
+                                    'شروق', _adjustTime(item['sunrise'])),
+                                _tableTimeItem('ظهر', _adjustTime(item['dhuhr'])),
+                                _tableTimeItem('عصر', _adjustTime(item['asr'])),
                                 _tableTimeItem(
-                                    'مغرب', _adjustTime('maghrib', item['maghrib'])),
-                                _tableTimeItem('عشاء', _adjustTime('isha', item['isha'])),
+                                    'مغرب', _adjustTime(item['maghrib'])),
+                                _tableTimeItem('عشاء', _adjustTime(item['isha'])),
                               ],
                             ),
                           ],
